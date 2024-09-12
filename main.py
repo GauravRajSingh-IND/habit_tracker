@@ -1,3 +1,4 @@
+from datetime import datetime
 import requests
 import dotenv
 import os
@@ -90,9 +91,6 @@ def create_graph(graph_id: str, graph_name: str, graph_unit: str, unit_type: str
 
     return response.json()  # Return the response as a dictionary
 
-# create a graph for user.
-#create_graph(graph_id= 'pythonlearning', graph_name= "python_journey_2024", graph_unit= "minutes")
-
 def delete_graph(graph_id:str) -> dict:
     """
     This function delete a given graph from the user account.
@@ -122,8 +120,7 @@ def delete_graph(graph_id:str) -> dict:
 
     return response.json()
 
-
-def post_pixel(graph_id:str, date: str, quantity: str) -> dict:
+def post_pixel(graph_id:str, quantity: str) -> dict:
     """
     This function update the pixel value of a given graphID
     :param graph_id: id of the graph where user wants to add pixel values.
@@ -145,7 +142,7 @@ def post_pixel(graph_id:str, date: str, quantity: str) -> dict:
     }
 
     params = {
-        "date": date,
+        "date": datetime.now().strftime('%Y%m%d'),
         "quantity":quantity
     }
 
@@ -158,5 +155,47 @@ def post_pixel(graph_id:str, date: str, quantity: str) -> dict:
 
     return response.json()
 
+
+def update_graph(graph_id:str, variable_name: list, variable_new_value: list) -> dict:
+    """
+    This function updates the preexisting graphs.
+
+    :param graph_id: id of the graph which user wants to update.
+    :param variable_name: name of the variables which user wants to update this should be in a list
+    :param variable_new_value: new values in a list
+    :return: HTTP code of response.
+    """
+
+    key = os.getenv('create_user_account_token')
+    username = os.getenv('create_user_account_username')
+    end_point = f"https://pixe.la/v1/users/{username}/graphs/{graph_id}"
+    variable_names = variable_name
+    variable_values = variable_new_value
+
+    if not all([key, username, end_point, variable_names, variable_values]):
+        raise "required values are missing.."
+    if len(variable_names) != len(variable_values):
+        raise "variable names and variables values are not of same size"
+
+    headers = {
+        "X-USER-TOKEN": key
+    }
+
+    params = {}
+    for num, names in enumerate(variable_names):
+        params[names] = variable_values[num]
+
+    try:
+        response = requests.put(url=end_point, json=params, headers=headers)
+        response.raise_for_status()
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error occurred while updating the graph: {e}")
+        return {}
+
+    return response.json()
+
+
+update_graph("pythonlearning", ["color"], variable_new_value= ["ichou"])
 
 
