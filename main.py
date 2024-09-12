@@ -47,9 +47,6 @@ def create_user_account() -> int:
 # create a new user
 #create_user_account()
 
-import os
-import requests
-
 
 def create_graph(graph_id: str, graph_name: str, graph_unit: str, unit_type: str = "int", color: str = "momiji") -> dict:
     """
@@ -93,6 +90,9 @@ def create_graph(graph_id: str, graph_name: str, graph_unit: str, unit_type: str
 
     return response.json()  # Return the response as a dictionary
 
+# create a graph for user.
+#create_graph(graph_id= 'pythonlearning', graph_name= "python_journey_2024", graph_unit= "minutes")
+
 def delete_graph(graph_id:str) -> dict:
     """
     This function delete a given graph from the user account.
@@ -123,24 +123,40 @@ def delete_graph(graph_id:str) -> dict:
     return response.json()
 
 
+def post_pixel(graph_id:str, date: str, quantity: str) -> dict:
+    """
+    This function update the pixel value of a given graphID
+    :param graph_id: id of the graph where user wants to add pixel values.
+    :param date: date should be a sing in yyyyMMdd format
+    :param quantity: quantity value
+    :return: HTTP status code of the task
+    """
+
+    graphID = graph_id
+    key = os.getenv('create_user_account_token')
+    username = os.getenv('create_user_account_username')
+
+    if not all([graphID, key, username]):
+        raise "Required values are missing.."
+
+    end_point = f"https://pixe.la/v1/users/{username}/graphs/{graphID}"
+    headers = {
+        "X-USER-TOKEN":key
+    }
+
+    params = {
+        "date": date,
+        "quantity":quantity
+    }
+
+    try:
+        response = requests.post(url=end_point, headers=headers, json= params)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"Error occurred while posting pixels: {e}")
+        return {}
+
+    return response.json()
 
 
 
-
-
-
-
-
-
-
-
-"""
-{'graphs': [{'id': 'pythoncoding', 'name': 'Python Journey', 'unit': 'Minutes', 'type': 'int', 'color': 'momiji',
- 'timezone': '', 'purgeCacheURLs': None, 'selfSufficient': 'none', 'isSecret': False, 'publishOptionalData': False}, 
- {'id': 'testing', 'name': 'testing_journey', 'unit': 'minutes', 'type': 'int', 'color': 'momiji', 'timezone': '', 
- 'purgeCacheURLs': None, 'selfSufficient': 'none', 'isSecret': False, 'publishOptionalData': False},
-  {'id': 'testing2', 'name': 'testing_journey2', 'unit': 'minutes', 'type': 'int', 'color': 'momiji', 'timezone': '', 
-  'purgeCacheURLs': None, 'selfSufficient': 'none', 'isSecret': False, 'publishOptionalData': False}, {'id': 'testing2024',
-   'name': 'testing_journey2024', 'unit': 'minutes', 'type': 'int', 'color': 'momiji', 'timezone': '', 'purgeCacheURLs': None,
-    'selfSufficient': 'none', 'isSecret': False, 'publishOptionalData': False}]}
-"""
