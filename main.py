@@ -89,8 +89,6 @@ def delete_user_account(username:str, key: str) -> dict:
 
     return response.json()
 
-delete_user_account("grsmanohar", "gauravrajsingh")
-
 def create_graph(graph_id: str, graph_name: str, graph_unit: str, unit_type: str = "int", color: str = "momiji") -> dict:
     """
     Creates a graph on Pixela.

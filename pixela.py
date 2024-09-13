@@ -1,4 +1,6 @@
 import requests
+import os.path
+import json
 
 
 class Pixela:
@@ -13,7 +15,7 @@ class Pixela:
         self.response_message = None
 
 
-    def create_user(self, authentication_token:str, username:str, term_condition: str="yes", not_minor:str="yes"):
+    def create_user(self, username:str, authentication_token:str, term_condition: str="yes", not_minor:str="yes"):
         """
         This function takes two parameters and create a new user account in pixela
         :param authentication_token: This token is the password of the user. user needs this during every login.
@@ -25,6 +27,9 @@ class Pixela:
 
         self.authentication_token = authentication_token
         self.user_name = username
+
+        if not all([self.authentication_token, self.user_name]):
+            raise "required parameters are misssing"
 
         end_point = f"{self.end_point}/v1/users"
 
@@ -45,11 +50,28 @@ class Pixela:
             self.error_message = f"Error while create the new user: {e}"
             self.response_message = None
 
+    def store_new_user_data(self, username:str, params:dict, date:str, response_message:str):
+
+        # check if the txt file exist or not
+        file_path = 'hidden_docs/user_data.json'
+        isfile = os.path.isfile(file_path)
+
+        if not isfile:
+            # Create a new file and write an empty JSON object
+            with open(file_path, "w") as file:
+                json.dump({}, file)  # Initialize with an empty JSON object
+                print("Created a new file.")
+        else:
+            # Open the existing file and read its contents
+            with open(file_path, "r") as file:
+                data = json.load(file)  # Load the JSON data
+                print("Loaded data:", data)
 
 
 
 
-
+pixela = Pixela()
+pixela.store_new_user_data("test", {"test":"test"}, "test", "test")
 
 
 
