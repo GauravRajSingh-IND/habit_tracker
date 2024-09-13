@@ -8,7 +8,6 @@ from requests.exceptions import RequestException
 # load dotenv.
 dotenv.load_dotenv()
 
-
 # User function.
 def create_user_account() -> int:
     """
