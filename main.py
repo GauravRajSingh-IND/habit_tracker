@@ -5,10 +5,8 @@ import os
 
 from requests.exceptions import RequestException
 
-
 # load dotenv.
 dotenv.load_dotenv()
-
 
 def create_user_account() -> int:
     """
@@ -44,10 +42,6 @@ def create_user_account() -> int:
         return None  # Return None or a specific error code
 
     return response.status_code
-
-# create a new user
-#create_user_account()
-
 
 def create_graph(graph_id: str, graph_name: str, graph_unit: str, unit_type: str = "int", color: str = "momiji") -> dict:
     """
@@ -155,7 +149,6 @@ def post_pixel(graph_id:str, quantity: str) -> dict:
 
     return response.json()
 
-
 def update_graph(graph_id:str, variable_name: list, variable_new_value: list) -> dict:
     """
     This function updates the preexisting graphs.
@@ -196,6 +189,5 @@ def update_graph(graph_id:str, variable_name: list, variable_new_value: list) ->
     return response.json()
 
 
-update_graph("pythonlearning", ["color"], variable_new_value= ["ichou"])
 
-
+"/Users/gauravsingh/pythonProject/pythonlearning"
