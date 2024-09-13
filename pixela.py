@@ -13,7 +13,7 @@ class Pixela:
         self.response_message = None
 
 
-    def create_user(self, authentication_token:str, username:str, term_condition: str="yes", not_minor:str="no"):
+    def create_user(self, authentication_token:str, username:str, term_condition: str="yes", not_minor:str="yes"):
         """
         This function takes two parameters and create a new user account in pixela
         :param authentication_token: This token is the password of the user. user needs this during every login.
@@ -44,6 +44,10 @@ class Pixela:
         except requests.exceptions.RequestException as e:
             self.error_message = f"Error while create the new user: {e}"
             self.response_message = None
+
+
+
+
 
 
 
