@@ -8,6 +8,8 @@ from requests.exceptions import RequestException
 # load dotenv.
 dotenv.load_dotenv()
 
+
+# User function.
 def create_user_account() -> int:
     """
     This function creates a user account on Pixela.
@@ -42,6 +44,53 @@ def create_user_account() -> int:
         return None  # Return None or a specific error code
 
     return response.status_code
+
+def update_user_account(username: str, key: str, new_key: str) -> dict:
+    """
+    This function update the authentication key.
+    :param username: username
+    :param key: old authentication key
+    :param new_key: new authentication key
+    :return: http response
+    """
+
+    end_point = f"https://pixe.la/v1/users/{username}"
+
+    headers = {
+        "X-USER-TOKEN": key
+    }
+
+    params = {
+            "newToken":new_key
+    }
+
+    try:
+        response = requests.put(url=end_point, json=params, headers=headers)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred while updating the key: {e}")
+        return {}
+
+    return response.json()
+
+def delete_user_account(username:str, key: str) -> dict:
+
+    end_point = f"https://pixe.la/v1/users/{username}"
+
+    headers = {
+        "X-USER-TOKEN": key
+    }
+
+    try:
+        response = requests.delete(url=end_point, headers=headers)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred while updating the key: {e}")
+        return {}
+
+    return response.json()
+
+delete_user_account("grsmanohar", "gauravrajsingh")
 
 def create_graph(graph_id: str, graph_name: str, graph_unit: str, unit_type: str = "int", color: str = "momiji") -> dict:
     """
@@ -189,5 +238,3 @@ def update_graph(graph_id:str, variable_name: list, variable_new_value: list) ->
     return response.json()
 
 
-
-"/Users/gauravsingh/pythonProject/pythonlearning"
