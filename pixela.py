@@ -1,6 +1,9 @@
+from datetime import datetime
 import requests
 import os.path
 import json
+
+from future.backports.datetime import datetime
 
 
 class Pixela:
@@ -50,6 +53,13 @@ class Pixela:
             self.error_message = f"Error while create the new user: {e}"
             self.response_message = None
 
+        finally:
+
+            date = str(datetime.now().strftime("%y%m%d"))
+            if self.response_message is not None:
+                response = str(self.response_message)
+                self.store_new_user_data(username=self.user_name, params= params, date=date, response_message= response)
+
     def store_new_user_data(self, username:str, params:dict, date:str, response_message:str):
 
         # check if the txt file exist or not
@@ -61,17 +71,36 @@ class Pixela:
             with open(file_path, "w") as file:
                 json.dump({}, file)  # Initialize with an empty JSON object
                 print("Created a new file.")
+
+            # Open the existing file and read its contents
+            with open(file_path, "r") as file:
+                data = json.load(file)  # Load the JSON data
+                print("Loaded data:", data)
+
         else:
             # Open the existing file and read its contents
             with open(file_path, "r") as file:
                 data = json.load(file)  # Load the JSON data
                 print("Loaded data:", data)
 
+        # dictionary of the user data.
+        user_dict = {
+            "username": username,
+            "params":params,
+            "date":date,
+            "response":response_message
+        }
+
+        # update the dictionary.
+        data[username] = user_dict
+
+        # Write the updated data back to the JSON file
+        with open(file_path, "w") as file:
+            json.dump(data, file, indent=4)
 
 
 
 pixela = Pixela()
-pixela.store_new_user_data("test", {"test":"test"}, "test", "test")
 
 
 
