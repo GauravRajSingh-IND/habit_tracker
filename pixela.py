@@ -3,9 +3,6 @@ import requests
 import os.path
 import json
 
-from future.backports.datetime import datetime
-
-
 class Pixela:
 
     def __init__(self):
@@ -97,8 +94,6 @@ class Pixela:
         # Write the updated data back to the JSON file
         with open(file_path, "w") as file:
             json.dump(data, file, indent=4)
-
-
 
 pixela = Pixela()
 
